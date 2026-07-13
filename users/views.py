@@ -42,3 +42,18 @@ def login_view(request):
 
 def show_session(request):
     return HttpResponse(f'username: {request.user}')
+
+# --- Test View for Custom Session ---
+def session_test_view(request):
+    # 1. Try to get a value from the custom session
+    # If it's the first time, it will return 0
+    counter = request.session.get('counter', 0)
+    
+    # 2. Increment the counter
+    counter += 1
+    
+    # 3. Save the new value back to the session
+    request.session['counter'] = counter
+    
+    # 4. Return a response showing the current counter value
+    return HttpResponse(f"Current session counter: {counter}")

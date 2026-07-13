@@ -42,10 +42,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'config.middleware.AuthenticationMiddleware',
-    # 'config.middleware.YourSessionMiddleWare',
+    'config.session_middleware.SimpleCookieSessionMiddleware',  # Added our custom session middleware here
+    'config.middleware.AuthenticationMiddleware',            # Now this can access request.session
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'config.urls'
 

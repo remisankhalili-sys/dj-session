@@ -1,3 +1,12 @@
 from django.db import models
 
-# Create your models here.
+class SessionStorage(models.Model):
+
+    session_key = models.CharField(max_length=255, unique=True)
+    
+   
+    session_data = models.TextField()
+
+    def __str__(self):
+        return f"Session: {self.session_key}"
+

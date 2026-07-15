@@ -43,12 +43,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'config.session_middleware.SimpleCookieSessionMiddleware',  # Added our custom session middleware here
-    'config.middleware.AuthenticationMiddleware',            # Now this can access request.session
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'users.middleware.SimpleCookieSessionMiddleware', 
 ]
+
 
 
 ROOT_URLCONF = 'config.urls'

@@ -37,25 +37,8 @@ class SimpleCookieSessionMiddleware:
 
         response = self.get_response(request)
 
-        # --- 3. Save session back to cookie ---
-        # Only save if there is actually something in the session
         if request.session:
-            try:
-                # Convert dict to JSON string
-                json_data = json.dumps(request.session)
-                # Sign the JSON string
-                signed_data = self.signer.sign(json_data)
-                # Set the signed string as the cookie value
-                # We add 'httponly=True' for extra security against XSS
-                response.set_cookie(
-                    self.cookie_name, 
-                    signed_data, 
-                    httponly=True, 
-                    samesite='Lax'
-                )
-            except Exception as e:
-                # In a real production app, you might want to log this error
-                print(f"Error signing session: {e}")
-
-        return response
-
+        #If the session is new, generate a random ID.   
+            if not request._session_id:
+                new_id = str(uuid.uuid4())
+                request._session_id = new_id

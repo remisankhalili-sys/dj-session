@@ -1,4 +1,6 @@
-from django.shortcuts import HttpResponse, redirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.views import View
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 

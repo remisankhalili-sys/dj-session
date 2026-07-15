@@ -1,5 +1,8 @@
 import json
-from django.core.signing import TimestampSigner, BadSignature
+import uuid
+from django.core import exceptions
+from django.conf import settings
+from users.models import SessionStorage 
 
 class SimpleCookieSessionMiddleware:
     """

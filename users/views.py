@@ -1,16 +1,16 @@
-from django.shortcuts import HttpResponse
-from django.contrib.auth import authenticate, login
+from django.shortcuts import HttpResponse, redirect
+from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 def register(request):
+   
     if User.objects.filter(username='sepehr').exists():
         return HttpResponse("User already exists")
 
     user = User(
-        username='user',
+        username='sepehr',
         email='user@gmail.com'
     )
     user.set_password("1234")
@@ -31,29 +31,45 @@ def login_view(request):
         )
 
         if user is not None:
-            login(request, user)
-            return HttpResponse("Logged in successfully")
+            # 1. Disabling (commenting out) a default Django function
+            # login(request, user)
+
+            # 2. Data stored in the custom session .
+            request.session['user_id'] = user.id
+            request.session['username'] = user.username
+            request.session['is_authenticated'] = True
+            
+            
+            return redirect('profile') 
 
         return HttpResponse("Invalid username or password")
 
-    return HttpResponse("Send a POST request with username and password.")
+    return HttpResponse("Send a GET request with username and password.")
 
+
+def profile_view(request):
+    """
+    A profile view that checks the authentication status via a custom session.
+    """
+    # Checking whether the user is authenticated in our custom session.
+    is_authenticated = request.session.get('is_authenticated', False)
+    
+    if is_authenticated:
+        username = request.session.get('username')
+        user_id = request.session.get('user_id')
+        return HttpResponse(f"<h1>Profile Page</h1><p>Welcome, {username}!<br>Your User ID is: {user_id}</p>")
+    
+    # If not logged in, redirect to the login page (security).
+    return redirect('login')
 
 
 def show_session(request):
-    return HttpResponse(f'username: {request.user}')
+    
+    username = request.session.get('username', 'Guest')
+    return HttpResponse(f'Current Session Username: {username}')
 
-# --- Test View for Custom Session ---
+
 def session_test_view(request):
-    # 1. Try to get a value from the custom session
-    # If it's the first time, it will return 0
+    #This view is for testing the correct functioning of the middleware and database storage.
     counter = request.session.get('counter', 0)
-    
-    # 2. Increment the counter
-    counter += 1
-    
-    # 3. Save the new value back to the session
-    request.session['counter'] = counter
-    
-    # 4. Return a response showing the current counter value
-    return HttpResponse(f"Current session counter: {counter}")
+    counter 

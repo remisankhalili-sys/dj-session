@@ -8,7 +8,8 @@ from users.models import SessionStorage
 class SimpleCookieSessionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        self.cookie_name = 'my_custom_session_id' 
+        self.cookie_name = 'my_custom_session_id'
+        self.max_age = timedelta(minutes=30) 
     """
     A custom middleware that stores session data in a signed cookie.
     This prevents users from tampering with the session data.

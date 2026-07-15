@@ -25,32 +25,29 @@ class RegisterView(View):
         return HttpResponse("User created successfully!")
 
 
-def login_view(request):
-    if request.method == "GET":
+class LoginView(View):
+    """
+    Handles user authentication and custom session assignment.
+    """
+    def get(self, request):
         username = request.GET.get("username")
         password = request.GET.get("password")
 
-        user = authenticate(
-            request,
-            username=username,
-            password=password
-        )
+        if not username or not password:
+            return HttpResponse("Please provide both username and password.")
+
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            # 1. Disabling (commenting out) a default Django function
-            # login(request, user)
-
-            # 2. Data stored in the custom session .
+            # Custom Session Implementation
+            # We are manually injecting data into the session object
             request.session['user_id'] = user.id
             request.session['username'] = user.username
             request.session['is_authenticated'] = True
             
-            
             return redirect('profile') 
 
-        return HttpResponse("Invalid username or password")
-
-    return HttpResponse("Send a GET request with username and password.")
+        return HttpResponse("Invalid username or password", status=401)
 
 
 def profile_view(request):

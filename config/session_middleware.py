@@ -55,8 +55,8 @@ class SimpleCookieSessionMiddleware:
                 self.cookie_name, 
                 request._session_id, 
                 httponly=True, 
-                samesite='Lax'
-                max_age=1800
+                samesite='Lax',
+                max_age=1800 # 30 Minutes to Seconds for Browser.
             )
 
         return response

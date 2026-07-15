@@ -42,3 +42,5 @@ class SimpleCookieSessionMiddleware:
             if not request._session_id:
                 new_id = str(uuid.uuid4())
                 request._session_id = new_id
+            
+            session_data_json = json.dumps(request.session)

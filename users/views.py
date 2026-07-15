@@ -73,5 +73,16 @@ class SessionStatusView(View):
     def get(self, request):
         username = request.session.get('username', 'Guest')
         return HttpResponse(f'Current Session Username: {username}')
+    
+class SessionTestView(View):
+    """
+    Testing the incrementing counter in custom session.
+    """
+    def get(self, request):
+        counter = request.session.get('counter', 0)
+        counter += 1
+        request.session['counter'] = counter
+        return HttpResponse(f"Session Counter: {counter}")
+
 
 

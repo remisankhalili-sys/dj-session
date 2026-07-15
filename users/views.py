@@ -6,19 +6,23 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-def register(request):
-   
-    if User.objects.filter(username='sepehr').exists():
-        return HttpResponse("User already exists")
 
-    user = User(
-        username='sepehr',
-        email='user@gmail.com'
-    )
-    user.set_password("1234")
-    user.save()
+class RegisterView(View):
+    """
+    Handles user registration.
+    """
+    def get(self, request):
+        # For simplicity, using a hardcoded user as in your original code
+        if User.objects.filter(username='sepehr').exists():
+            return HttpResponse("User already exists")
 
-    return HttpResponse("User created")
+        user = User(
+            username='sepehr',
+            email='user@gmail.com'
+        )
+        user.set_password("1234")
+        user.save()
+        return HttpResponse("User created successfully!")
 
 
 def login_view(request):

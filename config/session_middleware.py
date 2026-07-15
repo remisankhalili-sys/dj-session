@@ -4,22 +4,21 @@ from django.core import exceptions
 from django.conf import settings
 from users.models import SessionStorage 
 
+
 class SimpleCookieSessionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self.cookie_name = 'my_custom_session_id' 
     """
     A custom middleware that stores session data in a signed cookie.
     This prevents users from tampering with the session data.
     """
-    
-    def __init__(self, get_response):
-        self.get_response = get_response
-        # We use Django's built-in signer which uses the SECRET_KEY from settings
-        self.signer = TimestampSigner()
-        self.cookie_name = 'my_custom_session'
+
 
     def __call__(self, request):
-        # --- 1. Load session from cookie ---
-        session_data = {}
-        cookie_value = request.COOKIES.get(self.cookie_name)
+        
+        session_id = request.COOKIES.get(self.cookie_name)
+        request.session = {} 
 
         if cookie_value:
             try:

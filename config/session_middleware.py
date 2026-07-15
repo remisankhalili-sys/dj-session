@@ -44,14 +44,11 @@ class SimpleCookieSessionMiddleware:
         if request.session:
         #If the session is new, generate a random ID.   
             if not request._session_id:
-                new_id = str(uuid.uuid4())
-                request._session_id = new_id
-            
-            session_data_json = json.dumps(request.session)
+                request._session_id = str(uuid.uuid4())
 
             SessionStorage.objects.update_or_create(
                 session_key=request._session_id,
-                defaults={'session_data': session_data_json}
+                defaults={'session_data': json.dumps(request.session)}
             )
             # Storing the ID in the user's cookie.
             response.set_cookie(

@@ -24,18 +24,20 @@ class SimpleCookieSessionMiddleware:
 
         if session_id:
             try:
-              
                 storage = SessionStorage.objects.get(session_key=session_id)
-                request.session = json.loads(storage.session_data)
                 
-                request._session_id = session_id 
+                
+                if timezone.now() - storage.updated_at < self.max_age:
+                    request.session = json.loads(storage.session_data)
+                else:
+                
+                    storage.delete()
+                    request._session_id = None
+                    
             except SessionStorage.DoesNotExist:
-               
                 request._session_id = None
             except json.JSONDecodeError:
                 request._session_id = None
-        else:
-            request._session_id = None
 
         response = self.get_response(request)
 

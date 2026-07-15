@@ -65,15 +65,13 @@ class ProfileView(View):
         
         # Redirect to login if not authenticated
         return redirect('login')
-
-
-def show_session(request):
     
-    username = request.session.get('username', 'Guest')
-    return HttpResponse(f'Current Session Username: {username}')
+class SessionStatusView(View):
+    """
+    Helper view to check the current session status.
+    """
+    def get(self, request):
+        username = request.session.get('username', 'Guest')
+        return HttpResponse(f'Current Session Username: {username}')
 
 
-def session_test_view(request):
-    #This view is for testing the correct functioning of the middleware and database storage.
-    counter = request.session.get('counter', 0)
-    counter 

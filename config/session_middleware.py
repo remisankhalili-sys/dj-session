@@ -1,7 +1,7 @@
 import json
 import uuid
-from django.core import exceptions
-from django.conf import settings
+from datetime import timedelta
+from django.utils import timezone
 from users.models import SessionStorage 
 
 

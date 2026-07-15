@@ -20,21 +20,21 @@ class SimpleCookieSessionMiddleware:
         session_id = request.COOKIES.get(self.cookie_name)
         request.session = {} 
 
-        if cookie_value:
+        if session_id:
             try:
-                # Attempt to unsign and verify the data
-                # If someone tampered with the cookie, this raises BadSignature
-                decoded_data = self.signer.unsign(cookie_value)
-                session_data = json.loads(decoded_data)
-            except (BadSignature, json.JSONDecodeError, Exception):
-                # If signature is invalid or data is corrupted, 
-                # we treat it as an empty session (security first!)
-                session_data = {}
+              
+                storage = SessionStorage.objects.get(session_key=session_id)
+                request.session = json.loads(storage.session_data)
+                
+                request._session_id = session_id 
+            except SessionStorage.DoesNotExist:
+               
+                request._session_id = None
+            except json.JSONDecodeError:
+                request._session_id = None
+        else:
+            request._session_id = None
 
-        # Attach the session dictionary to the request object
-        request.session = session_data
-
-        # --- 2. Process the request ---
         response = self.get_response(request)
 
         # --- 3. Save session back to cookie ---

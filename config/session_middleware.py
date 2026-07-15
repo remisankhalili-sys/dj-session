@@ -20,6 +20,7 @@ class SimpleCookieSessionMiddleware:
         
         session_id = request.COOKIES.get(self.cookie_name)
         request.session = {} 
+        request._session_id = session_id
 
         if session_id:
             try:

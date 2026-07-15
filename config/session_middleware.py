@@ -49,3 +49,12 @@ class SimpleCookieSessionMiddleware:
                 session_key=request._session_id,
                 defaults={'session_data': session_data_json}
             )
+            # Storing the ID in the user's cookie.
+            response.set_cookie(
+                self.cookie_name, 
+                request._session_id, 
+                httponly=True, 
+                samesite='Lax'
+            )
+
+        return response

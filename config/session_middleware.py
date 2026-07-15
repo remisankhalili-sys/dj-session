@@ -56,6 +56,7 @@ class SimpleCookieSessionMiddleware:
                 request._session_id, 
                 httponly=True, 
                 samesite='Lax'
+                max_age=1800
             )
 
         return response

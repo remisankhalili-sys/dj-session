@@ -50,20 +50,21 @@ class LoginView(View):
         return HttpResponse("Invalid username or password", status=401)
 
 
-def profile_view(request):
+class ProfileView(View):
     """
-    A profile view that checks the authentication status via a custom session.
+    Displays user profile if authenticated via custom session.
     """
-    # Checking whether the user is authenticated in our custom session.
-    is_authenticated = request.session.get('is_authenticated', False)
-    
-    if is_authenticated:
-        username = request.session.get('username')
-        user_id = request.session.get('user_id')
-        return HttpResponse(f"<h1>Profile Page</h1><p>Welcome, {username}!<br>Your User ID is: {user_id}</p>")
-    
-    # If not logged in, redirect to the login page (security).
-    return redirect('login')
+    def get(self, request):
+        # Check authentication via our custom session logic
+        is_authenticated = request.session.get('is_authenticated', False)
+        
+        if is_authenticated:
+            username = request.session.get('username')
+            user_id = request.session.get('user_id')
+            return HttpResponse(f"<h1>Profile Page</h1><p>Welcome, {username}!<br>Your User ID is: {user_id}</p>")
+        
+        # Redirect to login if not authenticated
+        return redirect('login')
 
 
 def show_session(request):

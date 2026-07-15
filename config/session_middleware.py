@@ -44,3 +44,8 @@ class SimpleCookieSessionMiddleware:
                 request._session_id = new_id
             
             session_data_json = json.dumps(request.session)
+
+            SessionStorage.objects.update_or_create(
+                session_key=request._session_id,
+                defaults={'session_data': session_data_json}
+            )

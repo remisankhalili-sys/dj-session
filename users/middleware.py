@@ -62,4 +62,26 @@ class SimpleCookieSessionMiddleware:
         request.session = session
         response = self.get_response(request)
 
+        if session.modified:
+            if len(session) == 0:
+                if session.session_key:
+                    SessionStorage.objects.filter(session_key=session.session_key).delete()
+                response.delete_cookie(COOKIE_NAME)
+            else:
+                if not session.session_key:
+                    session.session_key = str(uuid.uuid4())
+                SessionStorage.objects.update_or_create(
+                    session_key=session.session_key,
+                    defaults={'session_data': json.dumps(dict(session))}
+                )
+                response.set_cookie(
+                    COOKIE_NAME,
+                    session.session_key,
+                    httponly=True,
+                    samesite='Lax',
+                    max_age=int(SESSION_AGE.total_seconds()),
+                )
+
+        return response
+
 

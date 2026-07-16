@@ -31,6 +31,9 @@ class LoginView(View):
     Handles user authentication and custom session assignment.
     """
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('profile')
+
         username = request.GET.get("username")
         password = request.GET.get("password")
 
@@ -40,16 +43,10 @@ class LoginView(View):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            # Custom Session Implementation
-            # We are manually injecting data into the session object
-            request.session['user_id'] = user.id
-            request.session['username'] = user.username
-            request.session['is_authenticated'] = True
-            
-            return redirect('profile') 
+            login(request, user)
+            return redirect('profile')
 
         return HttpResponse("Invalid username or password", status=401)
-
 
 class ProfileView(View):
     """

@@ -39,3 +39,11 @@ class SessionStore(dict):
             SessionStorage.objects.filter(session_key=self.session_key).delete()
         self.session_key = None
         self.modified = True
+
+class SimpleCookieSessionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        session_key = request.COOKIES.get(COOKIE_NAME)
+        session = SessionStore(session_key)

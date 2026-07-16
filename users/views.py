@@ -53,16 +53,14 @@ class ProfileView(View):
     Displays user profile if authenticated via custom session.
     """
     def get(self, request):
-        # Check authentication via our custom session logic
-        is_authenticated = request.session.get('is_authenticated', False)
-        
-        if is_authenticated:
-            username = request.session.get('username')
-            user_id = request.session.get('user_id')
-            return HttpResponse(f"<h1>Profile Page</h1><p>Welcome, {username}!<br>Your User ID is: {user_id}</p>")
-        
-        # Redirect to login if not authenticated
+        if request.user.is_authenticated:
+            return HttpResponse(
+                f"<h1>Profile Page</h1><p>Welcome, {request.user.username}!<br>"
+                f"Your User ID is: {request.user.id}</p>"
+            )
         return redirect('login')
+    
+
     
 class SessionStatusView(View):
     """

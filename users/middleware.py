@@ -24,3 +24,18 @@ class SessionStore(dict):
     def __delitem__(self, key):
         super().__delitem__(key)
         self.modified = True
+
+    def cycle_key(self):
+        """After login, the session key is changed but the data remains (preventing session persistence)."""
+        data = dict(self)
+        self.flush()
+        self.update(data)
+        self.modified = True
+
+    def flush(self):
+        """Called when logging out: all data is cleared and the key is invalidated."""
+        self.clear()
+        if self.session_key:
+            SessionStorage.objects.filter(session_key=self.session_key).delete()
+        self.session_key = None
+        self.modified = True

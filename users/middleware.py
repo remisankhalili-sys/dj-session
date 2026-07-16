@@ -47,3 +47,19 @@ class SimpleCookieSessionMiddleware:
     def __call__(self, request):
         session_key = request.COOKIES.get(COOKIE_NAME)
         session = SessionStore(session_key)
+
+        if session_key:
+            try:
+                storage = SessionStorage.objects.get(session_key=session_key)
+                if timezone.now() - storage.updated_at < SESSION_AGE:
+                    session.update(json.loads(storage.session_data))
+                else:
+                    storage.delete()
+                    session.session_key = None
+            except SessionStorage.DoesNotExist:
+                session.session_key = None
+
+        request.session = session
+        response = self.get_response(request)
+
+

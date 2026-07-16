@@ -60,7 +60,10 @@ class ProfileView(View):
             )
         return redirect('login')
     
-
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('login')
     
 class SessionStatusView(View):
     """

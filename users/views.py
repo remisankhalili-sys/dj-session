@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.views import View
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login, logout
 
 User = get_user_model()
 
